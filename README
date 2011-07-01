@@ -1,8 +1,7 @@
 Nautilus Xsnippet Extension
 ---------------------------
 
-**xsnippet** (http://www.xsnippet.tk) is a simple Pastebin service written in 
-Python.
+xsnippet_ is a simple Pastebin service written in Python.
 
 This is an extension for **Nautilus file manager**, which allows to send
 files to xsnippet service via context menu.
@@ -14,11 +13,17 @@ by notification.
 Installation
 ------------
 
-After uncompressing this tarball, you should use setup.py script:
+There are two installation ways:
 
-    $ sudo ./setup.py install
+1. Using 'pip' utility:
 
-Next, you should restart Nautilus:
+       $ sudo pip install nautilus-xsnippet
+
+2. Download and uncompress tarball. For installation use a setup.py script:
+
+       $ sudo ./setup.py install
+
+Restart Nautilus for applying extension:
 
     $ nautilus -q
 
@@ -56,3 +61,4 @@ Changes
 - Fix paths in setup.py.
 
 
+.. _xsnippet: http://www.xsnippet.tk/
