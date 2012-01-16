@@ -1,30 +1,36 @@
 #!/usr/bin/env python
 # coding: utf-8
-
-import os
+from os import getenv, path
 from distutils.core import setup
 
-root = os.path.dirname(__file__)
+USER_HOME = getenv('HOME')
+PROJECT_DIR = path.dirname(__file__)
 
 data = [
-    ('/usr/lib/nautilus/extensions-2.0/python',
-     [os.path.join(root, 'src/nautilus-xsnippet.py')]),
+    (path.join(USER_HOME, '.local', 'share', 'nautilus-python', 'extensions'),
+     [path.join(PROJECT_DIR, 'src', 'nautilus-xsnippet.py')]),
 
     ('/usr/share/pixmaps/',
-     [os.path.join(root, 'src/pixmaps/nautilus-xsnippet.png')]),
+     [path.join(PROJECT_DIR, 'src', 'pixmaps', 'nautilus-xsnippet.png')]),
 ]
 
 setup(
     name='nautilus-xsnippet',
+    version='0.2.0',
     description='Nautilus Xsnippet Extension',
     long_description=open('README').read(),
-    version='0.1.3',
     author='Igor Kalnitsky',
-    author_email='igor.kalnitsky@gmail.com',
-    url='http://www.kalnitsky.org.ua/',
+    author_email='igor@kalnitsky.org',
+    url='http://www.kalnitsky.org/',
     license='GPL-3',
-    platforms=['Linux'],
     keywords=['nautilus', 'xsnippet', 'extension'],
-    requires=['pynotify', 'nautilus', 'gtk'],
     data_files=data,
+    install_requires=['poster>=0.8.1', ],
+    platforms=['Linux'],
+    classifiers=[
+        "Operating System :: POSIX :: Linux",
+        "Topic :: Desktop Environment :: File Managers",
+        "Topic :: Desktop Environment :: Gnome",
+        "Environment :: Plugins",
+    ],
 )

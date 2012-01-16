@@ -9,6 +9,7 @@ files to xsnippet service via context menu.
 A link to the snippet is copied to the clipboard and displays
 by notification.
 
+Version 0.2 and above works only with Nautilus 3.
 
 Installation
 ------------
@@ -33,21 +34,33 @@ Dependencies
 
 Dependencies that must be meet:
 
-- python-nautilus
-  
-      $ sudo aptitude install python-nautilus
-  
-- python-notify
-  
-      $ sudo aptitude install python-notify
+- poster
 
-- python-gtk2
-  
-      $ sudo aptitude install python-gtk2
+      $ sudo pip install poster
+
+- python-nautilus and libnautilus-extension1
+
+      $ sudo aptitude install python-nautilus libnautilus-extension1
 
 
 Changes
 -------
+
+**0.2.0**
+
+- Moving to GTK3. So the project works with Nautilus 3.
+  *Note: Earlier versions of Nautilus were errors, so the extension 
+  may not work.*
+
+**0.1.5**
+
+- Use new domain.
+- Upload file system instead sending plain text.
+- New logotype.
+
+**0.1.4**
+
+- Add '[the link is copied to clipboard]' to notification.
 
 **0.1.3**
 
@@ -61,4 +74,4 @@ Changes
 - Fix paths in setup.py.
 
 
-.. _xsnippet: http://www.xsnippet.tk/
+.. _xsnippet: http://www.xsnippet.org/

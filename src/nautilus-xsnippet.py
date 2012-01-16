@@ -1,91 +1,57 @@
 # coding: utf-8
 
 """
-    AUTHOR: Igor Kalnitsky <igor.kalnitsky@gmail.com>
-    URL: http://www.kalnitsky.org.ua/
+    AUTHOR: Igor Kalnitsky <igor@kalnitsky.org>
+    URL: http://www.kalnitsky.org/
 """
 
-import nautilus
-import pynotify
-import urllib
-import urllib2
-import gtk
 import os
+import urllib2
 
-class XsnippetExtension(nautilus.MenuProvider):
+from gi.repository import Nautilus, GObject, Gtk, Gdk, GdkPixbuf, Notify
+
+from poster.encode import multipart_encode
+from poster.streaminghttp import register_openers
+
+
+class XsnippetExtension(GObject.GObject, Nautilus.MenuProvider):
     """
-        Nautilus extension to send files to xsnippet.tk
+        Nautilus extension to send files to xsnippet.org
 
-        Add 'Send to xsnippet.tk' item to nautilus context menu.
+        Add 'Send to xsnippet.org' item to nautilus context menu.
         Link to the snippet is copied to the clipboard and displays
         by notification.
     """
 
-    API_URL = "http://www.xsnippet.tk/new"
+    API_URL = "http://www.xsnippet.org/new"
     ICON = "/usr/share/pixmaps/nautilus-xsnippet.png"
 
-    languages = {
-            ".c": "C",
-            ".cpp": "C++", "cxx": "C++",
-            ".h": "C++", ".hpp": "C++", ".hxx": "C++",
-            ".cs": "C#",
-            ".java": "Java",
-            ".py": "Python",
-            ".sh": "Bash",
-            ".html": "HTML", ".htm": "HTML",
-            ".xml": "XML",
-            ".css": "CSS",
-            ".js": "JavaScript",
-            ".php": "PHP",
-            ".sql": "SQL",
-            ".rb": "Ruby",
-            ".conf": "Apache",
-            ".cmake": "CMake",
-            ".pas": "Delphi",
-            ".diff": "diff",
-            ".bat": "DOS",
-            ".erl": "Erlang",
-            ".go": "Go",
-            ".hs": "Haskell",
-            ".ini": "ini",
-            ".lisp": "Lisp",
-            ".lua": "Lua",
-            ".conf": "Nginx",
-            ".m": "Objective-C",
-            ".pl": "Perl",
-            ".scale": "Scala",
-            ".sm": "Smalltalk",
-            ".tex": "TeX",
-            ".vbs": "VBScript",
-            ".vhdl": "VHDL",
-            ".txt": "Text",
-    }
-
     def __init__(self):
-        pynotify.init("nautilus-xsnippet")
-        self.clipboard = gtk.clipboard_get()
+        try:
+            factory = Gtk.IconFactory()
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(XsnippetExtension.ICON)
+            iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
+            factory.add("xsnippet", iconset)
+            factory.add_default()
+        except:
+            pass
+
+        Notify.init("nautilus-xsnippet")
+        self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
     def sendFile(self, filename):
         """
-            Send file to xsnippet.tk and return link to last one.
+            Send file to xsnippet.org and return link to last one.
             Return 'None' if error occured.
         """
 
-        language = "Autodetection"
-        title = os.path.basename(filename)
-        extension = os.path.splitext(filename)[1]
-        if extension in XsnippetExtension.languages:
-            language = XsnippetExtension.languages[extension]
-
-        data = {
-            "title": title,
-            "content": open(filename).read(),
-            "language": language,
+        register_openers()
+        data, headers = multipart_encode({
+            "file": open(filename, "rb"),
             "author": os.environ.get("USER"),
-        }
+        })
 
-        request = urllib2.Request(url=XsnippetExtension.API_URL,
-                                  data=urllib.urlencode(data))
+        request = urllib2.Request(XsnippetExtension.API_URL, data, headers)
         response = urllib2.urlopen(request)
 
         if response.getcode() == 200:
@@ -94,12 +60,10 @@ class XsnippetExtension(nautilus.MenuProvider):
 
     def menu_click(self, menu, sourcefile):
         """
-            'Send to xsnippet.tk' item handler.
+            'Send to xsnippet.org' item handler.
 
             Send file to xsnippet and show notification.
         """
-        title = ''
-        message = ''
         snippeturl = self.sendFile(sourcefile.get_uri()[7:])
 
         if snippeturl is None:
@@ -107,29 +71,32 @@ class XsnippetExtension(nautilus.MenuProvider):
             message = "Can't post file"
         else:
             title = "Posted to"
-            message = snippeturl
+            message = snippeturl + '\n[the link is copied to clipboard]'
 
-            self.clipboard.set_text(message)
+            self.clipboard.set_text(message, -1)
             self.clipboard.store()
 
-        notification = pynotify.Notification(title, message,
-                                             XsnippetExtension.ICON)
+        notification = Notify.Notification.new(title, message,
+            XsnippetExtension.ICON)
         notification.show()
 
     def get_file_items(self, window, files):
         """
-            Show 'Send to xsnippet.tk' item only for 1 selected file.
+            Show 'Send to xsnippet.org' item only for 1 selected file.
         """
 
         if len(files) != 1 or files[0].is_directory():
             return
 
-        item = nautilus.MenuItem(
-                "XsnippetExtension::send_to_xsnippet",
-                "Send to xsnippet.tk",
-                "Send the current file to xsnippet.tk",
+        item = Nautilus.MenuItem(
+                name="XsnippetExtension::send_to_xsnippet",
+                label="Send to xsnippet.org",
+                tip="Send the current file to xsnippet.org",
+                icon="xsnippet"
         )
 
-        item.set_property("icon", "nautilus-xsnippet")
         item.connect("activate", self.menu_click, files[0])
         return [item]
+
+    def __del__(self):
+        Notify.uninit()
