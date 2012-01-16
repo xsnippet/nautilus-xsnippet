@@ -18,7 +18,7 @@ setup(
     name='nautilus-xsnippet',
     version='0.2.0',
     description='Nautilus Xsnippet Extension',
-    long_description=open('README').read(),
+    long_description=open('README.rst').read(),
     author='Igor Kalnitsky',
     author_email='igor@kalnitsky.org',
     url='http://www.kalnitsky.org/',
