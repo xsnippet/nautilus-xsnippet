@@ -39,7 +39,7 @@ class XsnippetExtension(GObject.GObject, Nautilus.MenuProvider):
         Notify.init("nautilus-xsnippet")
         self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
-    def sendFile(self, filename):
+    def send_file(self, filename):
         """
             Send file to xsnippet.org and return link to last one.
             Return 'None' if error occured.
@@ -64,7 +64,7 @@ class XsnippetExtension(GObject.GObject, Nautilus.MenuProvider):
 
             Send file to xsnippet and show notification.
         """
-        snippeturl = self.sendFile(sourcefile.get_uri()[7:])
+        snippeturl = self.send_file(sourcefile.get_uri()[7:])
 
         if snippeturl is None:
             title = "Error"
@@ -86,6 +86,9 @@ class XsnippetExtension(GObject.GObject, Nautilus.MenuProvider):
         """
 
         if len(files) != 1 or files[0].is_directory():
+            return
+
+        if files[0].is_mime_type('text/plain') == False:
             return
 
         item = Nautilus.MenuItem(

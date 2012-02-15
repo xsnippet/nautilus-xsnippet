@@ -46,10 +46,14 @@ Dependencies that must be meet:
 Changes
 -------
 
+**0.2.1**
+
+- Show *Send to xsnippet.org* menu item only for text files.
+
 **0.2.0**
 
 - Moving to GTK3. So the project works with Nautilus 3.
-  *Note: Earlier versions of Nautilus were errors, so the extension 
+  *Note: Earlier versions of Nautilus were errors, so the extension
   may not work.*
 
 **0.1.5**
