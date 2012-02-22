@@ -73,7 +73,7 @@ class XsnippetExtension(GObject.GObject, Nautilus.MenuProvider):
             title = "Posted to"
             message = snippeturl + '\n[the link is copied to clipboard]'
 
-            self.clipboard.set_text(message, -1)
+            self.clipboard.set_text(snippeturl, -1)
             self.clipboard.store()
 
         notification = Notify.Notification.new(title, message,

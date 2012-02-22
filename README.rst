@@ -46,6 +46,10 @@ Dependencies that must be meet:
 Changes
 -------
 
+**0.2.2**
+
+- Fix bug with coping full message to the clipboard
+
 **0.2.1**
 
 - Show *Send to xsnippet.org* menu item only for text files.

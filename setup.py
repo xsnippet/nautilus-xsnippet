@@ -16,7 +16,7 @@ data = [
 
 setup(
     name='nautilus-xsnippet',
-    version='0.2.1',
+    version='0.2.2',
     description='Nautilus Xsnippet Extension',
     long_description=open('README.rst').read(),
     author='Igor Kalnitsky',
