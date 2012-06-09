@@ -1,5 +1,5 @@
 Nautilus Xsnippet Extension
----------------------------
+===========================
 
 xsnippet_ is a simple Pastebin service written in Python.
 
@@ -9,22 +9,26 @@ files to xsnippet service via context menu.
 A link to the snippet is copied to the clipboard and displays
 by notification.
 
-Version 0.2 and above works only with Nautilus 3.
+    **NOTE:** Version 0.2 and above works only with Nautilus 3.
 
 Installation
 ------------
 
 There are two installation ways:
 
-1. Using 'pip' utility:
+1. Using ``pip``/``easy_install`` utility::
 
        $ sudo pip install nautilus-xsnippet
 
-2. Download and uncompress tarball. For installation use a setup.py script:
+   or ::
+
+       $ sudo easy_install nautilus-xsnippet
+
+2. Download and uncompress tarball. For installation use a setup.py script::
 
        $ sudo ./setup.py install
 
-Restart Nautilus for applying extension:
+Restart Nautilus for applying extension::
 
     $ nautilus -q
 
@@ -34,52 +38,20 @@ Dependencies
 
 Dependencies that must be meet:
 
-- poster
+- ``poster``::
 
       $ sudo pip install poster
 
-- python-nautilus and libnautilus-extension1
+- ``python-nautilus`` and ``libnautilus-extension1``::
 
       $ sudo aptitude install python-nautilus libnautilus-extension1
 
 
-Changes
--------
+Meta
+----
 
-**0.2.2**
-
-- Fix bug with coping full message to the clipboard
-
-**0.2.1**
-
-- Show *Send to xsnippet.org* menu item only for text files.
-
-**0.2.0**
-
-- Moving to GTK3. So the project works with Nautilus 3.
-  *Note: Earlier versions of Nautilus were errors, so the extension
-  may not work.*
-
-**0.1.5**
-
-- Use new domain.
-- Upload file system instead sending plain text.
-- New logotype.
-
-**0.1.4**
-
-- Add '[the link is copied to clipboard]' to notification.
-
-**0.1.3**
-
-- Remove getpass module from import section.
-- Pep8 verified code.
-
-
-**0.1.2**
-
-- Use filename as snippet title.
-- Fix paths in setup.py.
-
+- Author: Igor Kalnitsky <igor@kalnitsky.org>
+- License: GNU GPL v3
+- Version: 0.2.2
 
 .. _xsnippet: http://www.xsnippet.org/
