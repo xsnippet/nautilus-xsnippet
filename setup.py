@@ -16,16 +16,16 @@ data = [
 
 setup(
     name='nautilus-xsnippet',
-    version='0.2.2',
+    version='0.2.3',
     description='Nautilus Xsnippet Extension',
     long_description=open('README.rst').read(),
     author='Igor Kalnitsky',
     author_email='igor@kalnitsky.org',
-    url='http://www.kalnitsky.org/',
+    url='http://www.kalnitsky.org/projects/nautilus-xsnippet/en/',
     license='GPL-3',
     keywords=['nautilus', 'xsnippet', 'extension'],
     data_files=data,
-    install_requires=['poster>=0.8.1', ],
+    install_requires=['Pygments>=1.5', ],
     platforms=['Linux'],
     classifiers=[
         "Operating System :: POSIX :: Linux",

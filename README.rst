@@ -38,9 +38,9 @@ Dependencies
 
 Dependencies that must be meet:
 
-- ``poster``::
+- ``Pygments``::
 
-      $ sudo pip install poster
+      $ sudo pip install Pygments
 
 - ``python-nautilus`` and ``libnautilus-extension1``::
 
@@ -52,6 +52,6 @@ Meta
 
 - Author: Igor Kalnitsky <igor@kalnitsky.org>
 - License: GNU GPL v3
-- Version: 0.2.2
+- Version: 0.2.3
 
-.. _xsnippet: http://www.xsnippet.org/
+.. _xsnippet: http://xsnippet.org/
