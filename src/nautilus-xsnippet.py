@@ -35,9 +35,6 @@ class Xsnippet(GObject.GObject, Nautilus.MenuProvider):
         Link to the snippet is copied to the clipboard and displays
         by notification.
     """
-
-    DOMAIN = "http://xsnippet.org"
-    API_URL = "{domain}/api/v1/snippets/".format(domain=DOMAIN)
     ICON = "/usr/share/pixmaps/nautilus-xsnippet.png"
 
     def __init__(self):
@@ -53,50 +50,25 @@ class Xsnippet(GObject.GObject, Nautilus.MenuProvider):
         Notify.init("nautilus-xsnippet")
         self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
-    @staticmethod
-    def get_lang_by_filename(filename):
-        try:
-            aliases = get_lexer_for_filename(filename).aliases
-            sname = aliases[0] if aliases else "text"
-        except:
-            sname = "text"
-        return sname
-
-    def send_file(self, filename):
-        """
-            Send file to xsnippet.org and return link to last one.
-            Return 'None' if error occured.
-        """
-        data = {
-            "title": os.path.basename(filename),
-            "language": Xsnippet.get_lang_by_filename(filename),
-            "content": open(filename, "rt").read(),
-        }
-
-        data = urllib.urlencode(data)
-        request = urllib2.Request(Xsnippet.API_URL, data)
-        response = urllib2.urlopen(request)
-
-        if response.getcode() == 201:
-            id = json.loads(response.read()).get('id')
-            if id is not None:
-                return '{domain}/{id}/'.format(domain=Xsnippet.DOMAIN, id=id)
-        return None
-
     def menu_click(self, menu, sourcefile):
         """
             'Send to xsnippet.org' item handler.
 
             Send file to xsnippet and show notification.
         """
-        snippeturl = self.send_file(sourcefile.get_uri()[7:])
+        filename = sourcefile.get_uri()[7:]
+        snippeturl = post_to_xsnippet(
+            title=os.path.basename(filename),
+            language=get_lang_by_filename(filename),
+            content=open(filename, 'rt').read()
+        )
 
         if snippeturl is None:
             title = "Error"
             message = "Can't post file"
         else:
             title = "Posted to"
-            message = snippeturl + '\n[the link is copied to clipboard]'
+            message = snippeturl
 
             self.clipboard.set_text(snippeturl, -1)
             self.clipboard.store()
@@ -108,7 +80,6 @@ class Xsnippet(GObject.GObject, Nautilus.MenuProvider):
         """
             Show 'Send to xsnippet.org' item only for 1 selected file.
         """
-
         if len(files) != 1 or files[0].is_directory():
             return
 
@@ -127,3 +98,39 @@ class Xsnippet(GObject.GObject, Nautilus.MenuProvider):
 
     def __del__(self):
         Notify.uninit()
+
+
+def post_to_xsnippet(title, language, content):
+    '''
+        Send file to xsnippet.org and return link to last one.
+        Return 'None' if error occured.
+    '''
+    POST_SNIPPET_URL = 'http://xsnippet.org/api/v1/snippets/'
+    SHOW_SNIPPET_URL = 'http://xsnippet.org/{id}/'
+
+    if not content:
+        return None
+
+    data = {'content': content}
+
+    if title is not None:
+        data['title'] = title
+    if language is not None:
+        data['language'] = language
+
+    request = urllib2.Request(POST_SNIPPET_URL, urllib.urlencode(data))
+    response = urllib2.urlopen(request)
+
+    if response.getcode() == 201:
+        id = json.loads(response.read()).get('id')
+        return SHOW_SNIPPET_URL.format(id=id)
+    return None
+
+
+def get_lang_by_filename(filename):
+    try:
+        aliases = get_lexer_for_filename(filename).aliases
+        sname = aliases[0] if aliases else "text"
+    except:
+        sname = "text"
+    return sname
